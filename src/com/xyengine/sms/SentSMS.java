@@ -7,32 +7,58 @@ import com.twilio.sdk.resource.instance.Message;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.zip.Deflater;
+import java.util.zip.DeflaterOutputStream;
 
 /**
  * Created by XelnectMobileUser on 3/8/2015.
  */
-public class SentSMS {
+public class SentSMS implements Runnable{
     public static final String ACCOUNT_SID = "AC0e3f839440fb5b82381ce06cd2dccb91";
     public static final String AUTH_TOKEN = "3bd35460384cf304b1855f08b329d244";
     public static void main(String[] args) {
-        System.out.println(takeHtml("http://reddit.com/"));
-       //takeHtml("http://reddit.com/");
+
+        //System.out.println(takeHtml("http://reddit.com/"));
+        //compressHtml(takeHtml("http://reddit.com/"));
+        String html = takeHtml("http://reddit.com/");
+        html = html.substring(1,html.length()-1);
+        System.out.println(html);
+        String compressedHtml = compressHtml(html);
+        System.out.println(compressedHtml);
+        try {
+            System.out.println(decompress(compressedHtml));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        //takeHtml("http://reddit.com/");
         try {
             sentSmS();
         } catch (TwilioRestException e) {
             e.printStackTrace();
         }
     }
+    public static String decompress(String stringToBeDecompiled) throws UnsupportedEncodingException {
+        //String encodedString = stringToBeDecompiled;
+        Base64.Decoder decoder = Base64.getDecoder();
+        byte[] decodedByteArray = decoder.decode(stringToBeDecompiled);
+//Verify the decoded string
+        return new String(decodedByteArray, "UTF-16");
+    }
+    public static String compressHtml(String websiteHtml){
+        //String compressedHtml ="";
+        Base64.Encoder encoder = Base64.getEncoder();
+        //String normalString = "username:password";
+        return encoder.encodeToString(websiteHtml.getBytes(StandardCharsets.UTF_16));
+    }
     public static String takeHtml(String websiteURL){
-        String returnedHtml ="";
+        ArrayList<String> returnedHtml = new ArrayList<String>();
         URL url;
         InputStream is = null;
         BufferedReader br;
@@ -44,7 +70,9 @@ public class SentSMS {
             br = new BufferedReader(new InputStreamReader(is));
 
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
+                returnedHtml.add(line);
+                //System.out.println(line);
+               // compressHtml(line);
             }
         } catch (MalformedURLException mue) {
             mue.printStackTrace();
@@ -52,12 +80,20 @@ public class SentSMS {
             ioe.printStackTrace();
         } finally {
             try {
-                if (is != null) is.close();
+                if (is != null)
+                    is.close();
             } catch (IOException ioe) {
                 // nothing to see here
             }
         }
-        return  returnedHtml;
+       /* try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+        //new Thread(new SentSMS()).start();
+        //System.out.print(compressHtml(returnedHtml));
+        return  returnedHtml.toString();
     }
     public static void sentSmS() throws TwilioRestException {
         TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
@@ -72,5 +108,8 @@ public class SentSMS {
         Message message = messageFactory.create(params);
         System.out.println(message.getSid());
     }
-}
 
+    public void run() {
+        System.out.println("Hello from a thread!");
+    }
+}
