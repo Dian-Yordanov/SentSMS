@@ -39,7 +39,7 @@ public class SentSMS implements Runnable{
         }
         //takeHtml("http://reddit.com/");
         try {
-            sentSmS();
+            sentSmS(html.substring(0,240));
         } catch (TwilioRestException e) {
             e.printStackTrace();
         }
@@ -95,14 +95,14 @@ public class SentSMS implements Runnable{
         //System.out.print(compressHtml(returnedHtml));
         return  returnedHtml.toString();
     }
-    public static void sentSmS() throws TwilioRestException {
+    public static void sentSmS(String body) throws TwilioRestException {
         TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
 
         // Build the parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("From","+441297533022"));
         params.add(new BasicNameValuePair("To", "+4407479265143"));
-        params.add(new BasicNameValuePair("Body", "test"));
+        params.add(new BasicNameValuePair("Body", body));
 
         MessageFactory messageFactory = client.getAccount().getMessageFactory();
         Message message = messageFactory.create(params);
