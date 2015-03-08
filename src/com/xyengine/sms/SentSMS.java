@@ -27,12 +27,17 @@ public class SentSMS{
 
         String html = takeHtml("http://reddit.com/");
         html = html.substring(1,html.length()-1);
-        System.out.println(html);
+        //System.out.println(html);
 
         String compressOutput = LZString.compress(html);
-        System.out.println("Compressed: " + compressOutput);
-        String decompressed = LZString.decompress(compressOutput);
-        System.out.println("Decompressed: " + decompressed);
+        System.out.println("Compressed Size: " + compressOutput.length() + " compressed: " + compressOutput);
+        String decompressedOutput = LZString.decompress(compressOutput);
+        System.out.println("Decompressed Size: " +decompressedOutput.length() + " decompressed: " + decompressedOutput);
+
+        String outputUTF16 = LZString.compressToUTF16(html);
+        System.out.println("Compressed UTF size: " + outputUTF16.length() + " compressed: " + outputUTF16);
+        String decompressedUTF16 = LZString.decompressFromUTF16(outputUTF16);
+        System.out.println("Decompressed UTF size: " + decompressedUTF16.length() + " decompressed: " + outputUTF16);
 
         try {
             sentSmS(html.substring(0,240));
@@ -82,5 +87,5 @@ public class SentSMS{
         Message message = messageFactory.create(params);
         System.out.println(message.getSid());
     }
-    
+
 }
