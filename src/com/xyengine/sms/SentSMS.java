@@ -6,16 +6,17 @@ import com.twilio.sdk.resource.factory.MessageFactory;
 import com.twilio.sdk.resource.instance.Message;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import java.util.zip.*;
-import java.util.zip.Deflater;
+
 
 /**
  * Created by XelnectMobileUser on 3/8/2015.
@@ -23,11 +24,15 @@ import java.util.zip.Deflater;
 public class SentSMS{
     public static final String ACCOUNT_SID = "AC0e3f839440fb5b82381ce06cd2dccb91";
     public static final String AUTH_TOKEN = "3bd35460384cf304b1855f08b329d244";
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         String html = takeHtml("http://reddit.com/");
         html = html.substring(1,html.length()-1);
         //System.out.println(html);
+
+        JSONObject json = JsonReader.readJsonFromUrl("https://www.reddit.com/r/all/.json");
+        System.out.println(json.toString());
+        //System.out.println(json.get("id"));
 
         String compressOutput = LZString.compress(html);
         System.out.println("Compressed Size: " + compressOutput.length() + " compressed: " + compressOutput);
