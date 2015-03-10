@@ -49,8 +49,8 @@ public class SentSMS{
         html = html.substring(1,html.length()-1);
         //System.out.println(html);
 
-        JSONObject json = JsonReader.readJsonFromUrl("https://www.reddit.com/r/all/.json");
-        System.out.println(json.toString());
+        JSONObject json = JsonReader.readJsonFromUrl("https://www.reddit.com/r/Cynicalbrit/.json");
+      /*  System.out.println(json.toString());
         //System.out.println(json.get("id"));
 
         String compressOutput = LZString.compress(html);
@@ -62,10 +62,17 @@ public class SentSMS{
         System.out.println("Compressed UTF size: " + outputUTF16.length() + " compressed: " + outputUTF16);
         String decompressedUTF16 = LZString.decompressFromUTF16(outputUTF16);
         System.out.println("Decompressed UTF size: " + decompressedUTF16.length() + " decompressed: " + outputUTF16);
-        String compressedLenghtTest = smsLenghtTest.substring(0,120);/*LZString.compress(smsLenghtTest);*/
+        */
 
+        String compressedMessagetoBeSent = LZString.compressToBase64(json.toString().substring(0, 120));
+        System.out.println(compressedMessagetoBeSent);
+        /*System.out.println(
+        "The rest size: " + compressedMessagetoBeSent.substring(compressedMessagetoBeSent.length(),json.toString().length()).length() +
+        " The rest text:" +compressedMessagetoBeSent.substring(compressedMessagetoBeSent.length(),json.toString().length()));*/
+        String decompressedMessage = LZString.compressToBase64(compressedMessagetoBeSent);
+        System.out.println("Decompressed message: " + decompressedMessage);
         try {
-            sentSmS(compressedLenghtTest.length() + " " +compressedLenghtTest);
+            sentSmS(compressedMessagetoBeSent);
         } catch (TwilioRestException e) {
             e.printStackTrace();
         }
@@ -119,4 +126,5 @@ public class SentSMS{
         //.out.println( sdf.format(cal.getTime()) );
         return sdf.format(cal.getTime());
     }
+
 }
