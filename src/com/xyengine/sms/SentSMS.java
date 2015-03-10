@@ -24,6 +24,12 @@ import java.util.List;
 public class SentSMS{
     public static final String ACCOUNT_SID = "AC0e3f839440fb5b82381ce06cd2dccb91";
     public static final String AUTH_TOKEN = "3bd35460384cf304b1855f08b329d244";
+    public static String smsLenghtTest = "" +
+            "0123456789112345678921234567893123456789412345678951234567896123456789712345678981234567899123456789" +
+            "_123456789112345678921234567893123456789412345678951234567896123456789712345678981234567899123456789" +
+            "_123456789112345678921234567893123456789412345678951234567896123456789712345678981234567899123456789" +
+            "_123456789112345678921234567893123456789412345678951234567896123456789712345678981234567899123456789" +
+            "_123456789112345678921234567893123456789412345678951234567896123456789712345678981234567899123456789";
     public static void main(String[] args) throws IOException {
 
         String html = takeHtml("http://reddit.com/");
@@ -45,7 +51,7 @@ public class SentSMS{
         System.out.println("Decompressed UTF size: " + decompressedUTF16.length() + " decompressed: " + outputUTF16);
 
         try {
-            sentSmS(html.substring(0,240));
+            sentSmS(smsLenghtTest);
         } catch (TwilioRestException e) {
             e.printStackTrace();
         }
@@ -90,7 +96,7 @@ public class SentSMS{
 
         MessageFactory messageFactory = client.getAccount().getMessageFactory();
         Message message = messageFactory.create(params);
-        System.out.println(message.getSid());
+        System.out.println("Message sent" + message.getSid());
     }
 
 }
