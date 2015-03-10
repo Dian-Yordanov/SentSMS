@@ -43,13 +43,13 @@ public class SentSMS{
             "_143456789112345678921234567893123456789412345678951234567896123456789712345678981234567899123456789" +
             "_153456789112345678921234567893123456789412345678951234567896123456789712345678981234567899123456789" +
             "_163456789112345678921234567893123456789412345678951234567896e123456789712345678981234567899123456-3";
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
 
         String html = takeHtml("http://reddit.com/");
         html = html.substring(1,html.length()-1);
         //System.out.println(html);
 
-        JSONObject json = JsonReader.readJsonFromUrl("https://www.reddit.com/r/Cynicalbrit/.json");
+        JSONObject json = JsonReader.readJsonFromUrl("https://www.reddit.com/r/hearthstone/.json");
       /*  System.out.println(json.toString());
         //System.out.println(json.get("id"));
 
@@ -64,12 +64,24 @@ public class SentSMS{
         System.out.println("Decompressed UTF size: " + decompressedUTF16.length() + " decompressed: " + outputUTF16);
         */
 
-        String compressedMessagetoBeSent = LZString.compressToBase64(json.toString().substring(0, 120));
+        String compressedMessagetoBeSent = LZString.compressToBase64(json.toString().substring(0, 1562));
         System.out.println(compressedMessagetoBeSent);
+
+       /* String encodedcompressedMessagetoBeSent = LZString.encode64(json.toString().substring(0, 120));
+        System.out.println("normal message: "+encodedcompressedMessagetoBeSent);
+        System.out.println("json message: "+ LZString.encode64(compressedMessagetoBeSent));
+        String decodedcompressedMessagetoBeSent = LZString.decode64(json.toString().substring(0, 120));
+        System.out.println("normal message: "+decodedcompressedMessagetoBeSent);
+        System.out.println("json message: "+ LZString.decode64(compressedMessagetoBeSent));
+
+        System.out.println("ec: "+ LZString.encode64(compressedMessagetoBeSent));
+        System.out.println("ddcec: "+ LZString.decode64(LZString.decompressFromBase64(
+                LZString.encode64(compressedMessagetoBeSent))));
+*/
         /*System.out.println(
         "The rest size: " + compressedMessagetoBeSent.substring(compressedMessagetoBeSent.length(),json.toString().length()).length() +
         " The rest text:" +compressedMessagetoBeSent.substring(compressedMessagetoBeSent.length(),json.toString().length()));*/
-        String decompressedMessage = LZString.compressToBase64(compressedMessagetoBeSent);
+        String decompressedMessage = LZString.decompressFromBase64(compressedMessagetoBeSent);
         System.out.println("Decompressed message: " + decompressedMessage);
         try {
             sentSmS(compressedMessagetoBeSent);
