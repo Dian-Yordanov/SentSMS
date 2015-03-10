@@ -14,7 +14,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -107,7 +109,13 @@ public class SentSMS{
 
         MessageFactory messageFactory = client.getAccount().getMessageFactory();
         Message message = messageFactory.create(params);
-        System.out.println("Message sent" + message.getSid());
+        System.out.println("Message sent on: " + getCurrentTime() + " " + message.getSid());
     }
-
+    public static String getCurrentTime(){
+        Calendar cal = Calendar.getInstance();
+        cal.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        //.out.println( sdf.format(cal.getTime()) );
+        return sdf.format(cal.getTime());
+    }
 }
