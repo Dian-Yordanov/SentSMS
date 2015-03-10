@@ -62,9 +62,10 @@ public class SentSMS{
         System.out.println("Compressed UTF size: " + outputUTF16.length() + " compressed: " + outputUTF16);
         String decompressedUTF16 = LZString.decompressFromUTF16(outputUTF16);
         System.out.println("Decompressed UTF size: " + decompressedUTF16.length() + " decompressed: " + outputUTF16);
+        String compressedLenghtTest = smsLenghtTest.substring(0,120);/*LZString.compress(smsLenghtTest);*/
 
         try {
-            sentSmS(smsLenghtTest);
+            sentSmS(compressedLenghtTest.length() + " " +compressedLenghtTest);
         } catch (TwilioRestException e) {
             e.printStackTrace();
         }
