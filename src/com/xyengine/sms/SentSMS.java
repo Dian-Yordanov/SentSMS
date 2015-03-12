@@ -4,7 +4,11 @@ import com.twilio.sdk.TwilioRestClient;
 import com.twilio.sdk.TwilioRestException;
 import com.twilio.sdk.resource.factory.MessageFactory;
 import com.twilio.sdk.resource.instance.Message;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
@@ -64,7 +68,7 @@ public class SentSMS{
         System.out.println("Decompressed UTF size: " + decompressedUTF16.length() + " decompressed: " + outputUTF16);
         */
 
-        String compressedMessagetoBeSent = LZString.compressToBase64(json.toString().substring(0, 1562));
+        String compressedMessagetoBeSent = LZString.compressToBase64(json.toString().substring(0, 160));//1562 for twillio
         System.out.println(compressedMessagetoBeSent);
 
        /* String encodedcompressedMessagetoBeSent = LZString.encode64(json.toString().substring(0, 120));
@@ -83,11 +87,12 @@ public class SentSMS{
         " The rest text:" +compressedMessagetoBeSent.substring(compressedMessagetoBeSent.length(),json.toString().length()));*/
         String decompressedMessage = LZString.decompressFromBase64(compressedMessagetoBeSent);
         System.out.println("Decompressed message: " + decompressedMessage);
-        try {
+        /*try {
             sentSmS(compressedMessagetoBeSent);
         } catch (TwilioRestException e) {
             e.printStackTrace();
-        }
+        }*/
+        sentSmSUsingFowiz(compressedMessagetoBeSent);
     }
 
     public static String takeHtml(String websiteURL){
@@ -130,6 +135,29 @@ public class SentSMS{
         MessageFactory messageFactory = client.getAccount().getMessageFactory();
         Message message = messageFactory.create(params);
         System.out.println("Message sent on: " + getCurrentTime() + " " + message.getSid());
+    }
+    public static void sentSmSUsingFowiz(String body) throws IOException {
+        String myPasscode = "pppp0000";
+        String myUsername = "Xyan";
+        String toPhoneNumber = "+4407479265143";
+        body="hello";
+
+        HttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet("http://cloud.fowiz.com/api/message_http_api.php?username="+myUsername+
+                "&phonenumber="+toPhoneNumber
+                        +"&message="+ body +"&passcode="+myPasscode);
+        HttpResponse response = client.execute(request);
+
+        BufferedReader rd = new BufferedReader
+                (new InputStreamReader(response.getEntity().getContent()));
+
+        String line = "";
+        StringBuffer response1 = new StringBuffer();
+        while ((line = rd.readLine()) != null) {
+            response1.append(line);
+        }
+
+        System.out.println(response1.toString());
     }
     public static String getCurrentTime(){
         Calendar cal = Calendar.getInstance();
